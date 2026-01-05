@@ -1,87 +1,30 @@
-public class Member {
-    // 1. PRIVATE FIELDS (minimum 4)
-    private int memberId;
-    private String name;
-    private int age;
+// Member.java - CHILD CLASS extends Person
+public class Member extends Person {
+    // Specific fields for Member
     private String membershipType;
     private boolean isActive;
     private double balance;
 
-    // 2. CONSTRUCTOR WITH PARAMETERS (С ВАЛИДАЦИЕЙ)
-    public Member(int memberId, String name, int age, String membershipType, boolean isActive, double balance) {
-        setMemberId(memberId);
-        setName(name);
-        setAge(age);
+    // Constructor with super() call
+    public Member(int memberId, String name, int age,
+                  String membershipType, boolean isActive, double balance) {
+        super(memberId, name, age);  // Call parent constructor
         setMembershipType(membershipType);
         setActive(isActive);
         setBalance(balance);
     }
 
-    // 3. DEFAULT CONSTRUCTOR (optional)
+    // Default constructor
     public Member() {
-        this.memberId = 1; // Используем валидацию через вызов сеттера
-        this.name = "Unknown";
-        this.age = 18;
+        super(1, "Unknown Member", 18);  // Default values
         this.membershipType = "Basic";
         this.isActive = false;
         this.balance = 0.0;
     }
 
-    // 4. GETTERS (оставляем ваши оригинальные)
-    public int getMemberId() {
-        return memberId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public String getMembershipType() {
-        return membershipType;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public double getBalance() {
-        return balance;
-    }
-
-    // 5. SETTERS (С ВАЛИДАЦИЕЙ - заменяем старые)
-    public void setMemberId(int memberId) {
-        if (memberId > 0) {
-            this.memberId = memberId;
-        } else {
-            System.out.println("⚠️ Member ID must be positive! Setting to 1.");
-            this.memberId = 1;
-        }
-    }
-
-    public void setName(String name) {
-        if (name != null && !name.trim().isEmpty()) {
-            this.name = name;
-        } else {
-            System.out.println("⚠️ Name cannot be empty! Setting to 'Unknown'.");
-            this.name = "Unknown";
-        }
-    }
-
-    public void setAge(int age) {
-        if (age >= 16 && age <= 100) {
-            this.age = age;
-        } else {
-            System.out.println("⚠️ Age must be between 16 and 100! Setting to 18.");
-            this.age = 18;
-        }
-    }
-
+    // Setters with validation
     public void setMembershipType(String membershipType) {
-        if (membershipType.equals("Basic") || membershipType.equals("Premium") || membershipType.equals("Gold")) {
+        if (membershipType.equals("Basic") || membershipType.equals("Gold") || membershipType.equals("Premium")) {
             this.membershipType = membershipType;
         } else {
             System.out.println("⚠️ Invalid membership type! Setting to 'Basic'.");
@@ -102,9 +45,31 @@ public class Member {
         }
     }
 
-    // 6. ADDITIONAL METHODS (оставляем ваши оригинальные)
+    // Getters
+    public int getMemberId() { return id; }  // Inherited from Person
+    public String getMembershipType() { return membershipType; }
+    public boolean isActive() { return isActive; }
+    public double getBalance() { return balance; }
 
-    // Method 1: Upgrade membership
+    // ==================== POLYMORPHISM: METHOD OVERRIDING ====================
+
+    // Override parent's abstract method
+    @Override
+    public void displayInfo() {
+        System.out.println("🏋️‍♂️ MEMBER: " + name + " (ID: " + id + ")");
+        System.out.println("   Age: " + age + " | Membership: " + membershipType);
+        System.out.println("   Active: " + (isActive ? "✅" : "❌") + " | Balance: " + balance + " KZT");
+    }
+
+    // Override parent's method with super() call
+    @Override
+    public void introduce() {
+        super.introduce();  // Call parent's introduce() first
+        System.out.println("I have " + membershipType + " membership.");
+    }
+
+    // ==================== EXISTING METHODS (keep your business logic) ====================
+
     public void upgradeMembership(String newType) {
         if (newType.equals("Premium") && balance >= 50000) {
             membershipType = newType;
@@ -117,12 +82,10 @@ public class Member {
         }
     }
 
-    // Method 2: Check if member is eligible for discount
     public boolean isEligibleForDiscount() {
         return age < 25 || age > 60 || membershipType.equals("Premium");
     }
 
-    // Method 3: Add workout session (extra method)
     public void addWorkoutSession(double sessionCost) {
         if (balance >= sessionCost) {
             balance -= sessionCost;
@@ -132,16 +95,10 @@ public class Member {
         }
     }
 
-    // 7. toString() METHOD (оставляем ваш оригинальный)
     @Override
     public String toString() {
-        return "Member{" +
-                "memberId=" + memberId +
-                ", name='" + name + '\'' +
-                ", age=" + age +
-                ", membershipType='" + membershipType + '\'' +
-                ", isActive=" + isActive +
-                ", balance=" + balance + " KZT" +
-                '}';
+        return "Member{id=" + id + ", name='" + name + "', age=" + age +
+                ", membershipType='" + membershipType + "', isActive=" + isActive +
+                ", balance=" + balance + " KZT}";
     }
 }

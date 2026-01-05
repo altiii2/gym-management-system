@@ -1,77 +1,31 @@
-public class Trainer {
-    // 1. PRIVATE FIELDS (minimum 4)
-    private int trainerId;
-    private String name;
+// Trainer.java - CHILD CLASS extends Person
+public class Trainer extends Person {
+    // Specific fields for Trainer
     private String specialization;
     private int experienceYears;
     private boolean isCertified;
     private double hourlyRate;
 
-    // 2. CONSTRUCTOR WITH PARAMETERS (С ВАЛИДАЦИЕЙ)
-    public Trainer(int trainerId, String name, String specialization, int experienceYears, boolean isCertified, double hourlyRate) {
-        setTrainerId(trainerId);
-        setName(name);
+    // Constructor with super() call
+    public Trainer(int trainerId, String name, String specialization,
+                   int experienceYears, boolean isCertified, double hourlyRate) {
+        super(trainerId, name, 25);  // Call parent constructor (default age 25)
         setSpecialization(specialization);
         setExperienceYears(experienceYears);
         setCertified(isCertified);
         setHourlyRate(hourlyRate);
     }
 
-    // 3. DEFAULT CONSTRUCTOR
+    // Default constructor
     public Trainer() {
-        this.trainerId = 1;
-        this.name = "Unknown Trainer";
+        super(1, "Unknown Trainer", 25);
         this.specialization = "General Fitness";
         this.experienceYears = 0;
         this.isCertified = false;
         this.hourlyRate = 5000.0;
     }
 
-    // 4. GETTERS (оставляем без изменений)
-    public int getTrainerId() {
-        return trainerId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getSpecialization() {
-        return specialization;
-    }
-
-    public int getExperienceYears() {
-        return experienceYears;
-    }
-
-    public boolean isCertified() {
-        return isCertified;
-    }
-
-    public double getHourlyRate() {
-        return hourlyRate;
-    }
-
-    // 5. SETTERS (ДОБАВЛЯЕМ ВАЛИДАЦИЮ)
-
-    public void setTrainerId(int trainerId) {
-        if (trainerId > 0) {
-            this.trainerId = trainerId;
-        } else {
-            System.out.println("⚠️ Trainer ID must be positive! Setting to 1.");
-            this.trainerId = 1;
-        }
-    }
-
-    public void setName(String name) {
-        if (name != null && !name.trim().isEmpty()) {
-            this.name = name;
-        } else {
-            System.out.println("⚠️ Trainer name cannot be empty! Setting to 'Unknown Trainer'.");
-            this.name = "Unknown Trainer";
-        }
-    }
-
+    // Setters with validation
     public void setSpecialization(String specialization) {
         if (specialization != null && !specialization.trim().isEmpty()) {
             this.specialization = specialization;
@@ -85,13 +39,13 @@ public class Trainer {
         if (experienceYears >= 0 && experienceYears <= 50) {
             this.experienceYears = experienceYears;
         } else {
-            System.out.println("⚠️ Experience years must be 0-50! Setting to 0.");
+            System.out.println("⚠️ Experience must be 0-50 years! Setting to 0.");
             this.experienceYears = 0;
         }
     }
 
     public void setCertified(boolean certified) {
-        isCertified = certified; // boolean не требует валидации
+        isCertified = certified;
     }
 
     public void setHourlyRate(double hourlyRate) {
@@ -103,14 +57,37 @@ public class Trainer {
         }
     }
 
-    // 6. ADDITIONAL METHODS (оставляем без изменений)
+    // Getters
+    public int getTrainerId() { return id; }  // Inherited from Person
+    public String getSpecialization() { return specialization; }
+    public int getExperienceYears() { return experienceYears; }
+    public boolean isCertified() { return isCertified; }
+    public double getHourlyRate() { return hourlyRate; }
 
-    // Method 1: Check if trainer is experienced
+    // ==================== POLYMORPHISM: METHOD OVERRIDING ====================
+
+    // Override parent's abstract method
+    @Override
+    public void displayInfo() {
+        System.out.println("💪 TRAINER: " + name + " (ID: " + id + ")");
+        System.out.println("   Specialization: " + specialization);
+        System.out.println("   Experience: " + experienceYears + " years | Certified: " + (isCertified ? "✅" : "❌"));
+        System.out.println("   Hourly Rate: " + hourlyRate + " KZT/hour");
+    }
+
+    // Override parent's method (different from Member)
+    @Override
+    public void introduce() {
+        System.out.println("Hi! I'm trainer " + name + ".");
+        System.out.println("I specialize in " + specialization + " with " + experienceYears + " years experience.");
+    }
+
+    // ==================== EXISTING METHODS (keep your business logic) ====================
+
     public boolean isExperienced() {
         return experienceYears >= 5;
     }
 
-    // Method 2: Calculate session cost
     public double calculateSessionCost(int hours) {
         double cost = hourlyRate * hours;
         if (isCertified) {
@@ -119,21 +96,14 @@ public class Trainer {
         return cost;
     }
 
-    // Method 3: Check if trainer can train a specific member (extra)
     public boolean canTrainMember(Member member) {
         return member.isActive() && member.getBalance() >= hourlyRate;
     }
 
-    // 7. toString() METHOD (оставляем без изменений)
     @Override
     public String toString() {
-        return "Trainer{" +
-                "trainerId=" + trainerId +
-                ", name='" + name + '\'' +
-                ", specialization='" + specialization + '\'' +
-                ", experienceYears=" + experienceYears +
-                ", isCertified=" + isCertified +
-                ", hourlyRate=" + hourlyRate + " KZT/hour" +
-                '}';
+        return "Trainer{id=" + id + ", name='" + name + "', age=" + age +
+                ", specialization='" + specialization + "', experienceYears=" + experienceYears +
+                ", isCertified=" + isCertified + ", hourlyRate=" + hourlyRate + " KZT/hour}";
     }
 }
