@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 public class GymMenu {
     // POLYMORPHIC ArrayList for inheritance demonstration
-    private static ArrayList<Person> allPeople = new ArrayList<>();  // ← POLYMORPHISM!
+    private static ArrayList<Person> allPeople = new ArrayList<>();  
 
     // Regular ArrayLists for specific types
     private static ArrayList<Member> members = new ArrayList<>();
