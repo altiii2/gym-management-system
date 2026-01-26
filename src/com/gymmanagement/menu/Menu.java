@@ -1,4 +1,4 @@
-package com.gymmanagement.interfaces;
+package com.gymmanagement.menu;
 
 public interface Menu {
     void displayMenu();

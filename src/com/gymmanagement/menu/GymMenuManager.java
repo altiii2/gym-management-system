@@ -1,8 +1,8 @@
 package com.gymmanagement.menu;
 
-import com.gymmanagement.interfaces.Menu;
 import com.gymmanagement.model.*;
-import com.gymmanagement.exception.GymException; // Исправлено имя импорта
+import com.gymmanagement.database.MemberDAO;
+import com.gymmanagement.exception.GymException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -10,6 +10,8 @@ public class GymMenuManager implements Menu {
     private Scanner scanner = new Scanner(System.in);
     private ArrayList<Person> people = new ArrayList<>();
     private ArrayList<WorkoutSession> sessions = new ArrayList<>();
+    // Объект для работы с базой данных
+    private MemberDAO memberDAO = new MemberDAO();
 
     @Override
     public void displayMenu() {
@@ -24,11 +26,11 @@ public class GymMenuManager implements Menu {
 
     @Override
     public void run() {
-        while(true) {
+        while (true) {
             displayMenu();
             String choice = scanner.nextLine();
-            if(choice.equals("5")) {
-                System.out.println("EXITING SYSTEM...");
+            if (choice.equals("5")) {
+                System.out.println("EXITING SYSTEM... ");
                 break;
             }
             try {
@@ -37,12 +39,12 @@ public class GymMenuManager implements Menu {
                     case "2" -> addTrainer();
                     case "3" -> addWorkoutSession();
                     case "4" -> showAll();
-                    default -> System.out.println("INVALID CHOICE");
+                    default -> System.out.println("Invalid choice! Please try again.");
                 }
             } catch (GymException e) {
-                System.out.println("ERROR: " + e.getMessage());
+                System.out.println("SYSTEM ERROR: " + e.getMessage());
             } catch (NumberFormatException e) {
-                System.out.println("INPUT ERROR: Please enter a valid number!");
+                System.out.println("ERROR: INVALID INPUT! Please enter a number.");
             }
         }
     }
@@ -57,8 +59,16 @@ public class GymMenuManager implements Menu {
         System.out.print("MEMBERSHIP TYPE: ");
         String type = scanner.nextLine();
 
-        people.add(new Member(id, name, age, type));
-        System.out.println("✅ MEMBER ADDED SUCCESSFULLY");
+        // Создаем объект
+        Member newMember = new Member(id, name, age, type);
+
+        // Добавляем в локальный список (ArrayList)
+        people.add(newMember);
+
+        // ОТПРАВЛЯЕМ В БАЗУ ДАННЫХ (PostgreSQL)
+        memberDAO.insertMember(newMember);
+
+        System.out.println("✅ MEMBER ADDED SUCCESSFULLY TO LIST AND DATABASE");
     }
 
     private void addTrainer() throws GymException {
@@ -68,7 +78,7 @@ public class GymMenuManager implements Menu {
         String name = scanner.nextLine();
         System.out.print("AGE: ");
         int age = Integer.parseInt(scanner.nextLine());
-        System.out.print("SPECIALIZATION: ");
+        System.out.print("SPECIALIZATION TYPE: ");
         String spec = scanner.nextLine();
 
         people.add(new Trainer(id, name, age, spec));
@@ -89,14 +99,17 @@ public class GymMenuManager implements Menu {
         System.out.println("✅ Session scheduled!");
     }
 
-    public void showAll() {
+    public void showAll() throws GymException {
         if (people.isEmpty()) {
-            System.out.println("LIST IS EMPTY");
+            System.out.println("There are no people in the local system.");
         } else {
-            System.out.println("--- GYM RECORDS ---");
+            System.out.println("\n--- LOCAL GYM RECORDS ---");
             for (Person p : people) {
                 p.displayInfo();
             }
         }
+
+        // ПОКАЗЫВАЕМ ДАННЫЕ НАПРЯМУЮ ИЗ ПОСТГРЕСА
+        memberDAO.getAllMembers();
     }
 }

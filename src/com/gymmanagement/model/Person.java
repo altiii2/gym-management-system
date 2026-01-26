@@ -28,6 +28,10 @@ public abstract class Person {
         this.age = age;
     }
 
+    // ТЕПЕРЬ ВСЁ БУДЕТ РАБОТАТЬ:
     public String getName() { return name; }
+
+    public int getAge() { return age; } // ДОБАВЬ ЭТУ СТРОКУ
+
     public abstract void displayInfo();
 }
